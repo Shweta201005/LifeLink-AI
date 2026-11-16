@@ -26,20 +26,32 @@ The system provides:
 
 ⚙️ Project Structure
 
+📁 Project Structure
+
 LifeLink-AI/
 │
 ├── contracts/
 │   └── LifeLink.sol
+│
 ├── scripts/
-│   └── deploy.ts
+│   ├── deploy.ts
+│   └── send-op-tx.ts
+│
 ├── test/
+│   ├── Counter.ts
 │   └── LifeLink.ts
+│
+├── ignition/
+│   └── modules/
+│
 ├── index.html
 ├── script.js
 ├── app.py
 ├── ai_prediction.py
 ├── hardhat.config.ts
 ├── package.json
+├── package-lock.json
+├── .gitignore
 └── README.md
 
 ▶️ How to Run
