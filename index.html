@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LifeLink AI | Blood Resource Management</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.13.5/ethers.umd.min.js"></script>
+<style>
+:root {
+  --red:#c62840;
+  --dark:#202b3c;
+  --muted:#718096;
+  --bg:#f5f7fb;
+  --white:#fff;
+  --border:#e8edf3;
+  --green:#16865c;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--dark)}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.app{display:flex;min-height:100vh}
+.sidebar{width:250px;background:#fff;border-right:1px solid var(--border);padding:25px 17px;position:fixed;inset:0 auto 0 0;z-index:5;overflow-y:auto}
+.brand{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:800;color:var(--red);padding:5px 10px 32px}
+.brand-icon{background:#fff0f2;border-radius:12px;padding:10px}
+.nav-label{font-size:11px;font-weight:700;letter-spacing:1.3px;color:#9aa5b4;padding:15px 12px 9px}
+.nav-link{width:100%;border:0;background:transparent;padding:12px;border-radius:10px;display:flex;align-items:center;gap:12px;text-align:left;color:#667085;margin:3px 0;font-weight:600}
+.nav-link:hover,.nav-link.active{background:#fff0f2;color:var(--red)}
+.nav-link span:first-child{font-size:18px;width:23px;text-align:center}
+.sidebar-note{margin-top:35px;padding:16px;background:#fff4f5;border-radius:13px;font-size:12px;color:#85505a;line-height:1.6}
+.main{margin-left:250px;width:calc(100% - 250px);padding:25px 34px 50px}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:27px;gap:15px}
+.breadcrumb{font-size:13px;color:var(--muted)}
+.breadcrumb strong{color:var(--dark)}
+.wallet-btn,.primary{border:0;background:var(--red);color:#fff;padding:12px 19px;border-radius:9px;font-weight:700}
+.wallet-btn:hover,.primary:hover{background:#a91e35}
+.page{display:none}
+.page.active{display:block}
+.eyebrow{font-size:12px;color:var(--red);font-weight:800;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:10px}
+h1{font-size:30px;line-height:1.2;margin-bottom:9px}
+h2{font-size:21px;margin-bottom:8px}
+h3{font-size:16px;margin-bottom:14px}
+.sub{color:var(--muted);line-height:1.6;font-size:14px}
+.hero{background:linear-gradient(115deg,#742337,#c62840 65%,#e56b78);border-radius:19px;padding:38px;color:#fff;display:grid;grid-template-columns:1.4fr .8fr;gap:20px;align-items:center;min-height:260px}
+.hero h1{font-size:35px;max-width:520px}
+.hero p{color:#ffe6e9;max-width:520px;line-height:1.7;margin:13px 0 22px}
+.hero .primary{background:white;color:var(--red)}
+.hero-art{font-size:105px;text-align:center;filter:drop-shadow(0 8px 12px #571b2b55)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin:22px 0}
+.stat,.panel,.service-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:20px}
+.stat small{color:var(--muted);font-size:12px}
+.stat strong{display:block;font-size:25px;margin:10px 0 4px}
+.stat-icon{font-size:23px}
+.section-head{display:flex;justify-content:space-between;align-items:center;margin:27px 0 14px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+.service-card{transition:.2s}
+.service-card:hover{transform:translateY(-3px);box-shadow:0 10px 25px #1e293b0d}
+.service-icon{font-size:28px;margin-bottom:14px}
+.service-card p{font-size:13px;color:var(--muted);line-height:1.6;margin:8px 0 15px}
+.text-btn{border:0;background:transparent;color:var(--red);font-weight:700}
+.panel{margin-bottom:18px}
+.panel p{color:var(--muted);font-size:13px;margin-bottom:15px}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.field{margin-bottom:14px}
+label{display:block;font-size:13px;font-weight:700;margin-bottom:7px;color:#475467}
+input,select{width:100%;padding:12px 13px;border:1px solid #dce2ea;border-radius:8px;background:#fff;outline:none}
+input:focus,select:focus{border-color:var(--red);box-shadow:0 0 0 3px #c6284014}
+.primary{padding:12px 18px}
+.secondary{border:1px solid var(--border);background:#fff;color:var(--dark);padding:11px 16px;border-radius:9px;font-weight:700}
+.notice{padding:13px;border-radius:9px;background:#fff5e9;color:#925b15;font-size:13px;margin-top:12px;line-height:1.5}
+.status-box{background:#f4f8ff;border-radius:10px;padding:15px;margin-top:12px;white-space:pre-wrap;line-height:1.6;font-size:13px;overflow-wrap:anywhere}
+.ai-frame{width:100%;height:490px;border:0;border-radius:12px;background:#fff}
+.step-list{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:15px}
+.step{padding:15px;border:1px solid var(--border);border-radius:10px;background:#fff}
+.step b{display:block;font-size:13px;margin-bottom:7px}
+.step small{color:var(--muted)}
+.footer{margin-top:40px;border-top:1px solid var(--border);padding-top:20px;color:var(--muted);font-size:12px}
+@media(max-width:1000px){.stats{grid-template-columns:repeat(2,1fr)}.cards{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){
+ .sidebar{width:72px;padding:17px 8px}
+ .brand{font-size:0;padding:5px 7px 25px}
+ .brand-icon{font-size:20px}
+ .nav-label,.nav-link .nav-text,.sidebar-note{display:none}
+ .nav-link{justify-content:center;padding:13px 5px}
+ .main{margin-left:72px;width:calc(100% - 72px);padding:17px 13px}
+ .hero{grid-template-columns:1fr;padding:25px}
+ .hero h1{font-size:27px}
+ .hero-art{display:none}
+ .cards,.form-grid{grid-template-columns:1fr}
+ .stats{gap:8px}
+ .stat{padding:13px}
+ .stat strong{font-size:20px}
+ .step-list{grid-template-columns:repeat(2,1fr)}
+ h1{font-size:25px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand"><span class="brand-icon">❤️</span>LifeLink AI</div>
+  <div class="nav-label">MAIN MENU</div>
+  <button class="nav-link active" onclick="showPage('home',this)"><span>⌂</span><span class="nav-text">Dashboard</span></button>
+  <button class="nav-link" onclick="showPage('services',this)"><span>✧</span><span class="nav-text">Services</span></button>
+  <div class="nav-label">MANAGEMENT</div>
+  <button class="nav-link" onclick="showPage('admin',this)"><span>⚙</span><span class="nav-text">Admin Registration</span></button>
+  <button class="nav-link" onclick="showPage('hospital',this)"><span>🏥</span><span class="nav-text">Hospital Portal</span></button>
+  <button class="nav-link" onclick="showPage('bloodbank',this)"><span>🩸</span><span class="nav-text">Blood Bank Portal</span></button>
+  <button class="nav-link" onclick="showPage('tracking',this)"><span>⇄</span><span class="nav-text">Request Tracking</span></button>
+  <div class="nav-label">INTELLIGENCE</div>
+  <button class="nav-link" onclick="showPage('ai',this)"><span>✦</span><span class="nav-text">AI Predictions</span></button>
+  <div class="sidebar-note"><b>LifeLink AI</b><br>Connecting hospitals and blood banks through intelligent coordination and blockchain transparency.</div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+ <div class="breadcrumb">LifeLink AI / <strong id="crumb">Dashboard</strong></div>
+ <button class="wallet-btn" id="connectWallet">Connect Wallet</button>
+</header>
+
+<section class="page active" id="home">
+ <div class="hero">
+  <div>
+   <div class="eyebrow" style="color:#ffdce1">AI + BLOCKCHAIN HEALTHCARE</div>
+   <h1>Smarter blood management. Stronger connections.</h1>
+   <p>Bringing hospitals and blood banks together with secure blockchain transactions and AI-powered inventory insights.</p>
+   <button class="primary" onclick="showPage('services')">Explore Services →</button>
+  </div>
+  <div class="hero-art">🩸</div>
+ </div>
+ <div class="stats">
+  <div class="stat"><span class="stat-icon">🏥</span><small>Hospital Portal</small><strong>Connected</strong><small>Sepolia blockchain</small></div>
+  <div class="stat"><span class="stat-icon">🩸</span><small>Blood Bank Portal</small><strong>Available</strong><small>Inventory management</small></div>
+  <div class="stat"><span class="stat-icon">🔗</span><small>Smart Contract</small><strong>Deployed</strong><small>Ethereum Sepolia</small></div>
+  <div class="stat"><span class="stat-icon">✦</span><small>AI Module</small><strong>Active</strong><small>Shortage prediction demo</small></div>
+ </div>
+ <div class="section-head"><div><div class="eyebrow">PLATFORM OVERVIEW</div><h2>Explore your workspace</h2></div></div>
+ <div class="cards">
+  <div class="service-card"><div class="service-icon">🏥</div><h3>Hospital Management</h3><p>Create blood requests and follow their progress.</p><button class="text-btn" onclick="showPage('hospital')">Open portal →</button></div>
+  <div class="service-card"><div class="service-icon">🩸</div><h3>Blood Bank Management</h3><p>Update stock, reserve requests and confirm dispatch.</p><button class="text-btn" onclick="showPage('bloodbank')">Open portal →</button></div>
+  <div class="service-card"><div class="service-icon">✦</div><h3>AI Predictions</h3><p>Explore machine-learning-based inventory shortage predictions.</p><button class="text-btn" onclick="showPage('ai')">Open AI module →</button></div>
+ </div>
+</section>
+
+<section class="page" id="services">
+ <div class="eyebrow">WHAT WE OFFER</div><h1>Our Services</h1><p class="sub">One platform for coordinated blood resource management.</p>
+ <div class="cards" style="margin-top:22px">
+  <div class="service-card"><div class="service-icon">🏥</div><h3>Hospital Requests</h3><p>Submit blood group and unit requirements through the blockchain.</p><button class="text-btn" onclick="showPage('hospital')">Explore →</button></div>
+  <div class="service-card"><div class="service-icon">🩸</div><h3>Inventory Management</h3><p>Allow authorized blood banks to update available stock.</p><button class="text-btn" onclick="showPage('bloodbank')">Explore →</button></div>
+  <div class="service-card"><div class="service-icon">🔗</div><h3>Secure Transactions</h3><p>Record request, reservation and delivery stages through smart contracts.</p><button class="text-btn" onclick="showPage('tracking')">Explore →</button></div>
+  <div class="service-card"><div class="service-icon">✦</div><h3>AI Shortage Prediction</h3><p>Use a demonstration machine-learning model to estimate stock levels.</p><button class="text-btn" onclick="showPage('ai')">Explore →</button></div>
+  <div class="service-card"><div class="service-icon">📍</div><h3>Request Tracking</h3><p>View the current status of a blood request.</p><button class="text-btn" onclick="showPage('tracking')">Explore →</button></div>
+  <div class="service-card"><div class="service-icon">🛡️</div><h3>Role Registration</h3><p>Owner-authorized registration of hospital and blood bank wallets.</p><button class="text-btn" onclick="showPage('admin')">Explore →</button></div>
+ </div>
+</section>
+
+<section class="page" id="admin">
+ <div class="eyebrow">OWNER ACCESS</div><h1>Admin Registration</h1><p class="sub">Register authorized hospital and blood bank wallet addresses. Connect using the contract owner wallet.</p>
+ <div class="panel" style="margin-top:22px">
+  <h3>🏥 Register Hospital</h3>
+  <div class="field"><label>Hospital Wallet Address</label><input id="hospitalAddress" placeholder="Paste Account 2 public wallet address"></div>
+  <button class="primary" onclick="registerHospital()">Register Hospital</button>
+ </div>
+ <div class="panel">
+  <h3>🩸 Register Blood Bank</h3>
+  <div class="field"><label>Blood Bank Wallet Address</label><input id="bloodBankAddress" placeholder="Paste Account 3 public wallet address"></div>
+  <button class="primary" onclick="registerBloodBank()">Register Blood Bank</button>
+ </div>
+</section>
+
+<section class="page" id="hospital">
+ <div class="eyebrow">HOSPITAL WORKSPACE</div><h1>Hospital Portal</h1><p class="sub">Submit a test blood request on the Sepolia blockchain.</p>
+ <div class="panel" style="margin-top:22px">
+  <h3>🩸 Create Blood Request</h3>
+  <div class="form-grid">
+   <div class="field"><label>Blood Group</label><select id="bloodGroup"><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select></div>
+   <div class="field"><label>Units Required</label><input id="units" type="number" min="1" placeholder="Enter number of units"></div>
+  </div>
+  <button class="primary" onclick="createBloodRequest()">Submit Request</button>
+  <div id="hospitalResult" class="status-box" style="display:none"></div>
+ </div>
+</section>
+
+<section class="page" id="bloodbank">
+ <div class="eyebrow">BLOOD BANK WORKSPACE</div><h1>Blood Bank Portal</h1><p class="sub">Manage test inventory and reserve hospital requests.</p>
+ <div class="panel" style="margin-top:22px">
+  <h3>📦 Update Blood Inventory</h3>
+  <div class="form-grid">
+   <div class="field"><label>Blood Group</label><select id="inventoryGroup"><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select></div>
+   <div class="field"><label>Available Units</label><input id="inventoryUnits" type="number" min="0" placeholder="Enter available units"></div>
+  </div>
+  <button class="primary" onclick="updateBloodInventory()">Update Inventory</button>
+ </div>
+ <div class="panel">
+  <h3>🤝 Reserve a Blood Request</h3>
+  <div class="field"><label>Request ID</label><input id="requestId" type="number" min="1" placeholder="Enter request ID"></div>
+  <button class="primary" onclick="reserveBloodRequest()">Reserve Request</button>
+ </div>
+</section>
+
+<section class="page" id="tracking">
+ <div class="eyebrow">TRANSACTION WORKFLOW</div><h1>Request Tracking</h1><p class="sub">Track the request through its reservation, dispatch and receipt stages.</p>
+ <div class="step-list">
+  <div class="step"><b>01 · Open</b><small>Hospital creates request</small></div>
+  <div class="step"><b>02 · Reserved</b><small>Blood bank reserves stock</small></div>
+  <div class="step"><b>03 · Dispatched</b><small>Blood bank confirms dispatch</small></div>
+  <div class="step"><b>04 · Received</b><small>Hospital confirms receipt</small></div>
+ </div>
+ <div class="panel" style="margin-top:20px">
+  <h3>🚚 Confirm Blood Dispatch</h3>
+  <div class="field"><label>Request ID</label><input id="dispatchRequestId" type="number" min="1" placeholder="Enter request ID"></div>
+  <button class="primary" onclick="confirmBloodDispatch()">Confirm Dispatch</button>
+ </div>
+ <div class="panel">
+  <h3>✅ Confirm Blood Receipt</h3>
+  <div class="field"><label>Request ID</label><input id="receiptRequestId" type="number" min="1" placeholder="Enter request ID"></div>
+  <button class="primary" onclick="confirmBloodReceipt()">Confirm Receipt</button>
+ </div>
+ <div class="panel">
+  <h3>🔎 View Request Details</h3>
+  <div class="field"><label>Request ID</label><input id="viewRequestId" type="number" min="1" placeholder="Enter request ID"></div>
+  <button class="primary" onclick="getBloodRequest()">View Request</button>
+  <div id="requestDetails" class="status-box" style="display:none"></div>
+ </div>
+</section>
+
+<section class="page" id="ai">
+ <div class="eyebrow">MACHINE LEARNING</div><h1>AI Blood Shortage Prediction</h1>
+ <p class="sub">Estimate inventory levels and view demonstration shortage alerts using the Random Forest model.</p>
+ <div class="panel" style="margin-top:22px">
+  <h3>✦ Prediction Dashboard</h3>
+  <p>Enter stock and expected demand values to generate a prediction.</p>
+  <iframe class="ai-frame" src="http://127.0.0.1:5000" title="LifeLink AI Prediction"></iframe>
+  <div class="notice">Demonstration model: predictions use sample training data and manually entered values. They are not connected to verified live hospital inventory and must not guide clinical transfusion decisions.</div>
+ </div>
+</section>
+
+<footer class="footer">© 2026 LifeLink AI · Academic prototype · Ethereum Sepolia test network</footer>
+</main>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
