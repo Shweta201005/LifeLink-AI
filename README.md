@@ -28,22 +28,18 @@ The system provides:
 
 📁 Project Structure
 
+```text
 LifeLink-AI/
-│
 ├── contracts/
 │   └── LifeLink.sol
-│
 ├── scripts/
 │   ├── deploy.ts
 │   └── send-op-tx.ts
-│
 ├── test/
 │   ├── Counter.ts
 │   └── LifeLink.ts
-│
 ├── ignition/
 │   └── modules/
-│
 ├── index.html
 ├── script.js
 ├── app.py
