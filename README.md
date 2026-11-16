@@ -85,7 +85,10 @@ Use MetaMask with the Sepolia test network for blockchain demonstrations.
 
 🔐 Security and Disclaimer
 
-This is an academic prototype intended for demonstration and educational purposes. It uses testnet blockchain transactions and simulated inventory data. It is not intended for real-world blood transfusion decisions or medical use. Medical compatibility and transfusion decisions must always be made by qualified healthcare professionals.
+This is an academic prototype intended for demonstration and educational purposes.
+It uses testnet blockchain transactions and simulated inventory data.
+It is not intended for real-world blood transfusion decisions or medical use.
+Medical compatibility and transfusion decisions must always be made by qualified healthcare professionals.
 
 👩‍💻 Project Information
 
