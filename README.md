@@ -96,10 +96,4 @@ Project: LifeLink AI
 Domain: Artificial Intelligence and Blockchain
 Repository: "GitHub – LifeLink AI" (https://github.com/Shweta201005/LifeLink-AI)
 
-## 📸 Project Screenshots
 
-### LifeLink AI Website
-![Website](Screenshot%202026-11-16%20183912.png)
-
-### AI Blood Shortage Prediction
-![AI Prediction](Screenshot%202026-11-16%20184004.png)
