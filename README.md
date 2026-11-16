@@ -1,57 +1,86 @@
-# Sample Hardhat 3 Project (`mocha` and `ethers`)
+🩸 LifeLink AI
 
-This project showcases a Hardhat 3 project using `mocha` for tests and the `ethers` library for Ethereum interactions.
+AI-Powered Decentralized Blood Resource Management System
 
-To learn more about Hardhat 3, please visit the [Getting Started guide](https://hardhat.org/docs/getting-started#getting-started-with-hardhat-3). To share your feedback, join our [Hardhat 3](https://hardhat.org/hardhat3-telegram-group) Telegram group or [open an issue](https://github.com/NomicFoundation/hardhat/issues/new) in our GitHub issue tracker.
+LifeLink AI is a blockchain-based blood resource management system designed to improve coordination between hospitals and blood banks. It combines smart contracts and machine learning to support blood inventory management, request tracking, and shortage prediction.
 
-## Project Overview
+🚀 Project Overview
 
-This example project includes:
+The system provides:
 
-- A simple Hardhat configuration file.
-- Foundry-compatible Solidity unit tests.
-- TypeScript integration tests using `mocha` and ethers.js
-- Examples demonstrating how to connect to different types of networks, including locally simulating OP mainnet.
+- Hospital Portal: Hospitals can submit blood requests.
+- Blood Bank Portal: Blood banks can update available blood inventory and reserve requests.
+- Blockchain Integration: Smart contracts manage registrations, inventory updates, and request status.
+- Request Tracking: Users can track the progress of blood requests.
+- AI Blood Shortage Prediction: A machine learning model estimates expected stock levels and provides low-inventory warnings.
 
-## Usage
+🛠️ Technologies Used
 
-### Running Tests
+- Frontend: HTML, CSS, JavaScript
+- Blockchain: Solidity, Ethereum Sepolia
+- Development Environment: Hardhat
+- Wallet: MetaMask
+- Blockchain Library: Ethers.js
+- Backend: Python, Flask
+- Machine Learning: Scikit-learn
 
-To run all the tests in the project, execute the following command:
+⚙️ Project Structure
 
-```shell
-npx hardhat test
-```
+LifeLink-AI/
+│
+├── contracts/
+│   └── LifeLink.sol
+├── scripts/
+│   └── deploy.ts
+├── test/
+│   └── LifeLink.ts
+├── index.html
+├── script.js
+├── app.py
+├── ai_prediction.py
+├── hardhat.config.ts
+├── package.json
+└── README.md
 
-You can also selectively run the Solidity or `mocha` tests:
+▶️ How to Run
 
-```shell
-npx hardhat test solidity
-npx hardhat test mocha
-```
+1. Clone the repository
 
-### Make a deployment to Sepolia
+git clone https://github.com/Shweta201005/LifeLink-AI.git
+cd LifeLink-AI
 
-This project includes an example Ignition module to deploy the contract. You can deploy this module to a locally simulated chain or to Sepolia.
+2. Install blockchain dependencies
 
-To run the deployment to a local chain:
+npm install
 
-```shell
-npx hardhat ignition deploy ignition/modules/Counter.ts
-```
+3. Compile the smart contract
 
-To run the deployment to Sepolia, you need an account with funds to send the transaction. The provided Hardhat configuration includes a Configuration Variable called `SEPOLIA_PRIVATE_KEY`, which you can use to set the private key of the account you want to use.
+npx hardhat compile
 
-You can set the `SEPOLIA_PRIVATE_KEY` variable using the `hardhat-keystore` plugin or by setting it as an environment variable.
+4. Install Python dependencies
 
-To set the `SEPOLIA_PRIVATE_KEY` config variable using `hardhat-keystore`:
+python -m pip install flask scikit-learn pandas
 
-```shell
-npx hardhat keystore set SEPOLIA_PRIVATE_KEY
-```
+5. Start the AI backend
 
-After setting the variable, you can run the deployment with the Sepolia network:
+python app.py
 
-```shell
-npx hardhat ignition deploy --network sepolia ignition/modules/Counter.ts
-```
+6. Open the frontend
+
+Open another terminal in the project folder and run:
+
+python -m http.server 5500
+
+Open "http://localhost:5500" in your browser.
+
+Use MetaMask with the Sepolia test network for blockchain demonstrations.
+
+🔐 Security and Disclaimer
+
+This is an academic prototype intended for demonstration and educational purposes. It uses testnet blockchain transactions and simulated inventory data. It is not intended for real-world blood transfusion decisions or medical use. Medical compatibility and transfusion decisions must always be made by qualified healthcare professionals.
+
+👩‍💻 Project Information
+
+Project: LifeLink AI
+Domain: Artificial Intelligence and Blockchain
+Repository: "GitHub – LifeLink AI" (https://github.com/Shweta201005/LifeLink-AI)
